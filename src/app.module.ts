@@ -14,6 +14,7 @@ import { ProfileModule } from '@/modules/profile/profile.module'
 import { UserModule } from '@/modules/user/user.module'
 
 // Util Modules
+import { JwtModule } from '@/utils/jwt/jwt.module'
 import { MailerModule } from '@/utils/mailer/mailer.module'
 
 @Module({
@@ -29,6 +30,7 @@ import { MailerModule } from '@/utils/mailer/mailer.module'
         UserModule,
 
         // Mailer
+        JwtModule,
         MailerModule,
     ],
     controllers: [AppController],
