@@ -32,7 +32,7 @@ import { StripeModule } from '@/utils/stripe/stripe.module'
         ProfileModule,
         UserModule,
 
-        // Mailer
+        // Util Modules
         JwtModule,
         MailerModule,
         StripeModule,
