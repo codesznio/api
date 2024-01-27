@@ -13,8 +13,24 @@ import { AuthenticationModule } from '@/modules/authentication/authentication.mo
 import { ProfileModule } from '@/modules/profile/profile.module'
 import { UserModule } from '@/modules/user/user.module'
 
+// Util Modules
+import { MailerModule } from '@/utils/mailer/mailer.module'
+
 @Module({
-    imports: [ConfigModule, ProvidersModule, ActivityModule, AuthenticationModule, ProfileModule, UserModule],
+    imports: [
+        // Global Modules
+        ConfigModule,
+        ProvidersModule,
+
+        // Modules
+        ActivityModule,
+        AuthenticationModule,
+        ProfileModule,
+        UserModule,
+
+        // Mailer
+        MailerModule,
+    ],
     controllers: [AppController],
 })
 export class AppModule {}
