@@ -17,6 +17,7 @@ import { UserModule } from '@/modules/user/user.module'
 // Util Modules
 import { JwtModule } from '@/utils/jwt/jwt.module'
 import { MailerModule } from '@/utils/mailer/mailer.module'
+import { StripeModule } from '@/utils/stripe/stripe.module'
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { MailerModule } from '@/utils/mailer/mailer.module'
         // Mailer
         JwtModule,
         MailerModule,
+        StripeModule,
     ],
     controllers: [AppController],
 })
