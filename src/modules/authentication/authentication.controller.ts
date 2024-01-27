@@ -5,7 +5,7 @@ export class AuthenticationController {
     @Get('')
     async test() {
         return {
-            data: 'profile endpoint',
+            data: 'auth endpoint',
             success: true,
         }
     }
