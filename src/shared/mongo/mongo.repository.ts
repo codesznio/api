@@ -1,4 +1,4 @@
-import { FilterQuery, Model, UpdateQuery, AnyKeys } from 'mongoose'
+import { FilterQuery, Model, ModifyResult, UpdateQuery, AnyKeys } from 'mongoose'
 
 // Interface
 import { MongoRepositoryInterface } from './mongo.interface'
@@ -6,53 +6,49 @@ import { MongoRepositoryInterface } from './mongo.interface'
 export class MongoRepository<T extends Document> implements MongoRepositoryInterface<T> {
     constructor(
         private readonly _repository: Model<T>,
-        private _populateOnFind: string[] = []
+        private _populateOnFind: string[] = [],
     ) {}
 
     async create(data: AnyKeys<T>): Promise<T> {
-        try {
-            return await this._repository.create(data)
-        } catch (err) {
-            throw new Error(err)
+        return await this._repository.create(data)
+    }
+
+    async delete(id: string): Promise<ModifyResult<T>> {
+        const result = await this._repository.findByIdAndDelete(id).exec()
+
+        if (result) {
+            return {
+                value: result,
+                ok: 1,
+            }
+        } else {
+            return {
+                value: null,
+                ok: 0,
+            }
         }
     }
 
     async list(): Promise<T[]> {
-        try {
-            return await this._repository.find().populate(this._populateOnFind).exec()
-        } catch (error) {
-            throw error
-        }
+        return await this._repository.find().populate(this._populateOnFind).exec()
     }
 
     async retrieve(id: string): Promise<T | null> {
-        try {
-            const entity = await this._repository.findById(id)
+        const entity = await this._repository.findById(id)
 
-            return entity ? await entity.populate(this._populateOnFind) : null
-        } catch (error) {
-            throw error
-        }
+        return entity ? await entity.populate(this._populateOnFind) : null
     }
 
     async search(query: FilterQuery<T>): Promise<T[]> {
-        try {
-            return await this._repository.find(query).populate(this._populateOnFind).exec()
-        } catch (error) {
-            throw error
-        }
+        return await this._repository.find(query).populate(this._populateOnFind).exec()
     }
 
     async update(id: string, update: UpdateQuery<T>): Promise<T> {
-        try {
-            return await this._repository
-                .findByIdAndUpdate(id, update, {
-                    new: true,
-                    timestamps: true,
-                })
-                .exec()
-        } catch (error) {
-            throw error
-        }
+        return await this._repository
+            .findByIdAndUpdate(id, update, {
+                new: true,
+                timestamps: true,
+            })
+            .exec()
     }
 }
