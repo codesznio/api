@@ -1,2 +1,2 @@
-export * from './dto'
+export * from './authentication'
 export * from './response'

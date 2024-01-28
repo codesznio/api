@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common'
 
 import { Api } from '@/types/api'
 
+/**
+ * 1. Check if user exists
+ */
 @Injectable()
 export class AuthenticationService {
     signup(dto: Api.SignupUserParams): Api.Tokens {
