@@ -11,7 +11,7 @@ import { StripeService } from '@/modules/utility/stripe/services'
 import { UserService } from '@/modules/feature/user/user.service'
 
 // Utils
-import { StringEncryptor } from '@/shared/string-encryptor'
+import { StringEncryptor } from '@/shared/utils/string-encryptor'
 
 @Injectable()
 export class AuthenticationService {
@@ -24,6 +24,67 @@ export class AuthenticationService {
 
         private _stringEncryptor: StringEncryptor,
     ) {}
+
+    async login(dto: Api.EmailLoginParams): Promise<Api.Tokens> {
+        const user = await this._userService.retrieve.byEmail(dto.email)
+
+        if (!user) {
+            throw new BadRequestException('Cannot verify account')
+        }
+
+        const profile = await this._profileService.retrieve.byUser(user._id)
+        const tokens = await this._jwtService.buildTokens(user, profile)
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'tokens.jwt.refresh': this._stringEncryptor.generate(tokens.refresh),
+            }),
+        ])
+
+        return tokens
+    }
+
+    async logout(payload: Api.JwtPayload): Promise<void> {
+        const user = await this._userService.retrieve.byId(payload.user)
+
+        if (!user) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'tokens.jwt.refresh': null,
+            }),
+        ])
+
+        return
+    }
+
+    async refresh(payload: Api.JwtRefreshPayload): Promise<Api.Tokens> {
+        const [user, profile] = await Promise.all([
+            this._userService.retrieve.byId(payload.user),
+            this._profileService.retrieve.byId(payload.profile),
+        ])
+        if (!user) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        const isValid = this._stringEncryptor.compare(payload.refresh, user.tokens.jwt.refresh)
+
+        if (!isValid) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        const tokens = await this._jwtService.buildTokens(user, profile)
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'tokens.jwt.refresh': null,
+            }),
+        ])
+
+        return tokens
+    }
 
     async signup(dto: Api.EmailSignupParams): Promise<Api.Tokens> {
         const exists = await this._userService.retrieve.byEmail(dto.email)
@@ -60,6 +121,13 @@ export class AuthenticationService {
         return tokens
     }
 
+    // TODO
+    async resendEmailVerification(): Promise<void> {
+        // await this._mailerService.sendPasswordResetEmail({})
+
+        return
+    }
+
     async verifyEmail(dto: Api.EmailVerificationParams): Promise<Api.Tokens> {
         const user = await this._userService.retrieve.byId(dto.id)
 
@@ -88,12 +156,5 @@ export class AuthenticationService {
         ])
 
         return tokens
-    }
-
-    // TODO
-    async resendEmailVerification(): Promise<void> {
-        // await this._mailerService.sendPasswordResetEmail({})
-
-        return
     }
 }
