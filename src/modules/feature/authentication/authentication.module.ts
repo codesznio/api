@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 
 // Module
 import { JwtModule } from '@/modules/utility/jwt/jwt.module'
+import { MailerModule } from '@/modules/utility/mailer/mailer.module'
 import { ProfileModule } from '@/modules/feature/profile/profile.module'
 import { UserModule } from '@/modules/feature/user/user.module'
 
@@ -12,7 +13,7 @@ import { AuthenticationController } from './authentication.controller'
 import { AuthenticationService } from './authentication.service'
 
 @Module({
-    imports: [JwtModule, ProfileModule, UserModule],
+    imports: [JwtModule, MailerModule, ProfileModule, UserModule],
     controllers: [AuthenticationController],
     providers: [AuthenticationService],
     exports: [AuthenticationService],

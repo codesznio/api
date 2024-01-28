@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 
+// Data
 import { Api } from '@/data/types/api'
 
 // Services
 import { JwtService } from '@/modules/utility/jwt/jwt.service'
+import { MailerService } from '@/modules/utility/mailer/mailer.service'
 import { ProfileService } from '@/modules/feature/profile/profile.service'
 import { UserService } from '@/modules/feature/user/user.service'
 
@@ -11,6 +13,7 @@ import { UserService } from '@/modules/feature/user/user.service'
 export class AuthenticationService {
     constructor(
         private _jwtService: JwtService,
+        private _mailerService: MailerService,
         private _profileService: ProfileService,
         private _userService: UserService,
     ) {}
@@ -39,7 +42,7 @@ export class AuthenticationService {
         /**
          * TODO: Update DB with refresh token, mailer, activity log
          */
-        await Promise.all([])
+        await Promise.all([this._mailerService.sendWelcomeEmail(user)])
 
         return tokens
     }
