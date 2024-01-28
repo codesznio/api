@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 
 // Service
-import { StripeService } from './stripe.service'
+import { StripeService } from './services'
 
 @Module({
     imports: [],

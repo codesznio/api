@@ -1,3 +1,4 @@
+import { UpdateQuery } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 
 // User
@@ -31,6 +32,10 @@ export class UserService {
         })
     }
 
+    private async _updateMany(user: User, query: UpdateQuery<Partial<User>>): Promise<User | null> {
+        return await this._userRepository.update(user._id, query)
+    }
+
     async create(dto: Api.UserCreateParams): Promise<User> {
         const user = await this._userRepository.create(this._userFactory.create(dto))
 
@@ -46,6 +51,7 @@ export class UserService {
 
     get update() {
         return {
+            many: (user: User, query: UpdateQuery<Partial<User>>) => this._updateMany(user, query),
             refresh: (user: User, token: string): Promise<User | null> => this._updateRefreshToken(user, token),
         }
     }
