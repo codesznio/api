@@ -28,6 +28,7 @@ export class AuthenticationController {
     @UseGuards(AuthorizationGuard)
     @Post('logout')
     async logout(@GetPayload() payload: Api.JwtPayload): Promise<Api.Response<null>> {
+        console.log(payload)
         await this._authenticationService.logout(payload)
 
         return {

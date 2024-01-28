@@ -26,7 +26,7 @@ export class AccessStrategy extends PassportStrategy(Strategy, 'jwt') {
     async validate(payload: Api.JwtPayload) {
         const [user, profile] = await Promise.all([
             this._userService.retrieve.byId(payload.user),
-            this._profileService.retrieve.byUser(payload.user),
+            this._profileService.retrieve.byId(payload.profile),
         ])
 
         return {
