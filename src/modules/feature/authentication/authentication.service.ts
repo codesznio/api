@@ -45,7 +45,7 @@ export class AuthenticationService {
         const tokens = await this._jwtService.buildTokens(user, profile)
 
         await Promise.all([
-            this._userService.update.many(user, {
+            this._userService.update.properties(user, {
                 'payments.stripeid': stripe.id,
                 'tokens.jwt.refresh': tokens.refresh,
             }),

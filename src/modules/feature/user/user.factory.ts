@@ -20,6 +20,7 @@ export class UserFactory {
         user.credentials = {
             email: dto.email,
             password: this._stringEncryptor.generate(dto.password),
+            role: Api.RoleType.USER,
             verified: false,
         }
 
