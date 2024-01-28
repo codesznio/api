@@ -22,6 +22,7 @@ export class JwtService {
                 {
                     profile: profile._id.toString(),
                     user: user._id.toString(),
+                    verified: user.credentials.email_verified,
                 },
                 false,
             ),
@@ -29,6 +30,7 @@ export class JwtService {
                 {
                     profile: profile._id.toString(),
                     user: user._id.toString(),
+                    verified: user.credentials.email_verified,
                 },
                 true,
             ),

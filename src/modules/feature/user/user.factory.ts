@@ -16,6 +16,7 @@ export class UserFactory {
 
         user.credentials = {
             email: dto.email,
+            email_verified: false,
             password: this._stringEncryptor.generate(dto.password),
         }
 
