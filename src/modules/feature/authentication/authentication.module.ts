@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 
 // Module
+import { JwtModule } from '@/modules/utility/jwt/jwt.module'
 import { ProfileModule } from '@/modules/feature/profile/profile.module'
 import { UserModule } from '@/modules/feature/user/user.module'
 
@@ -11,7 +12,7 @@ import { AuthenticationController } from './authentication.controller'
 import { AuthenticationService } from './authentication.service'
 
 @Module({
-    imports: [ProfileModule, UserModule],
+    imports: [JwtModule, ProfileModule, UserModule],
     controllers: [AuthenticationController],
     providers: [AuthenticationService],
     exports: [AuthenticationService],

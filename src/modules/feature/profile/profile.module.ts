@@ -6,15 +6,16 @@ import { ProfileController } from './profile.controller'
 
 // Services
 import { ProfileService } from './profile.service'
-import { Profile, ProfileSchema } from './profile.schema'
 
-// Repository
+// Profile
+import { Profile, ProfileSchema } from './profile.schema'
+import { ProfileFactory } from './profile.factory'
 import { ProfileRepository } from './profile.repository'
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: Profile.name, schema: ProfileSchema }])],
     controllers: [ProfileController],
-    providers: [ProfileRepository, ProfileService],
+    providers: [ProfileFactory, ProfileRepository, ProfileService],
     exports: [ProfileService],
 })
 export class ProfileModule {}

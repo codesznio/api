@@ -3,13 +3,19 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { Api } from '@/data/types/api'
 
 // Services
+import { JwtService } from '@/modules/utility/jwt/jwt.service'
+import { ProfileService } from '@/modules/feature/profile/profile.service'
 import { UserService } from '@/modules/feature/user/user.service'
 
 @Injectable()
 export class AuthenticationService {
-    constructor(private _userService: UserService) {}
+    constructor(
+        private _jwtService: JwtService,
+        private _profileService: ProfileService,
+        private _userService: UserService,
+    ) {}
 
-    async signup(dto: Api.UserSignupParams): Promise<Api.Tokens> {
+    async signup(dto: Api.EmailSignupParams): Promise<Api.Tokens> {
         const exists = await this._userService.retrieve.byEmail(dto.email)
 
         if (exists) {
@@ -18,30 +24,23 @@ export class AuthenticationService {
 
         const user = await this._userService.create(dto)
 
-        console.log(user)
-
-        return {
-            access: '',
-            refresh: '',
+        if (!user) {
+            throw new BadRequestException('Cannot create user with this email.')
         }
+
+        const profile = await this._profileService.create(user)
+
+        if (!profile) {
+            throw new BadRequestException('Cannot create user with this email.')
+        }
+
+        const tokens = await this._jwtService.buildTokens(user, profile)
+
+        /**
+         * TODO: Update DB with refresh token, mailer, activity log
+         */
+        await Promise.all([])
+
+        return tokens
     }
 }
-
-// async signup(dto: SignupDTO): Promise<TokensResponseType> {
-//     const exists = await this._userService.find({ 'credentials.email': dto.email })
-
-//     if (exists) {
-//         throw new BadRequestException('Cannot create user with this email.')
-//     }
-
-//     const user = await this._userService.create(dto)
-//     const tokens = await this._jwt.buildTokens(user)
-
-//     await Promise.all([
-//         this._userService.update(user._id, {
-//             'tokens.refresh': this._stringEncryptor.generateHash(tokens.refresh),
-//         }),
-//     ])
-
-//     return tokens
-// }

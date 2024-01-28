@@ -27,9 +27,6 @@ export class UserService {
 
     async create(dto: Api.UserCreateParams): Promise<User> {
         const user = await this._userRepository.create(this._userFactory.create(dto))
-        // const profile = await this._profileService.create(user)
-        // await this._permissionService.create(profile, user)
-        // return user
 
         return user
     }
