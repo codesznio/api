@@ -26,14 +26,14 @@ export class UserService {
         return await this._userRepository.retrieve(id)
     }
 
+    private async _updateMultipleProperties(user: User, query: UpdateQuery<Partial<User>>): Promise<User | null> {
+        return await this._userRepository.update(user._id, query)
+    }
+
     private async _updateRefreshToken(user: User, token: string): Promise<User | null> {
         return await this._userRepository.update(user._id, {
             'tokens.jwt.refresh': token,
         })
-    }
-
-    private async _updateMultipleProperties(user: User, query: UpdateQuery<Partial<User>>): Promise<User | null> {
-        return await this._userRepository.update(user._id, query)
     }
 
     async create(dto: Api.UserCreateParams): Promise<User> {

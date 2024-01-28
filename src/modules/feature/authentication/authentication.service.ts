@@ -10,6 +10,9 @@ import { ProfileService } from '@/modules/feature/profile/profile.service'
 import { StripeService } from '@/modules/utility/stripe/services'
 import { UserService } from '@/modules/feature/user/user.service'
 
+// Utils
+import { StringEncryptor } from '@/shared/string-encryptor'
+
 @Injectable()
 export class AuthenticationService {
     constructor(
@@ -18,6 +21,8 @@ export class AuthenticationService {
         private _profileService: ProfileService,
         private _stripeService: StripeService,
         private _userService: UserService,
+
+        private _stringEncryptor: StringEncryptor,
     ) {}
 
     async signup(dto: Api.EmailSignupParams): Promise<Api.Tokens> {
@@ -47,11 +52,48 @@ export class AuthenticationService {
         await Promise.all([
             this._userService.update.properties(user, {
                 'payments.stripeid': stripe.id,
-                'tokens.jwt.refresh': tokens.refresh,
+                'tokens.jwt.refresh': this._stringEncryptor.generate(tokens.refresh),
             }),
             this._mailerService.sendWelcomeEmail(user),
         ])
 
         return tokens
+    }
+
+    async verifyEmail(dto: Api.EmailVerificationParams): Promise<Api.Tokens> {
+        const user = await this._userService.retrieve.byId(dto.id)
+
+        if (!user) {
+            throw new BadRequestException('Cannot verify account')
+        }
+
+        if (
+            dto.token !== user.tokens.verification.token &&
+            parseInt(dto.numeric) !== user.tokens.verification.numeric
+        ) {
+            throw new BadRequestException('Cannot verify account')
+        }
+
+        const profile = await this._profileService.retrieve.byUser(user._id)
+        const tokens = await this._jwtService.buildTokens(user, profile)
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'credentials.verified': true,
+                'tokens.jwt.refresh': this._stringEncryptor.generate(tokens.refresh),
+                'tokens.verification.expiry': null,
+                'tokens.verification.numeric': null,
+                'tokens.verification.token': null,
+            }),
+        ])
+
+        return tokens
+    }
+
+    // TODO
+    async resendEmailVerification(): Promise<void> {
+        // await this._mailerService.sendPasswordResetEmail({})
+
+        return
     }
 }

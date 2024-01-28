@@ -13,10 +13,13 @@ import { AuthenticationController } from './authentication.controller'
 // Service
 import { AuthenticationService } from './authentication.service'
 
+// Shared
+import { StringEncryptor } from '@/shared/string-encryptor'
+
 @Module({
     imports: [JwtModule, MailerModule, ProfileModule, StripeModule, UserModule],
     controllers: [AuthenticationController],
-    providers: [AuthenticationService],
+    providers: [AuthenticationService, StringEncryptor],
     exports: [AuthenticationService],
 })
 export class AuthenticationModule {}
