@@ -39,10 +39,10 @@ export class AuthenticationService {
 
         const tokens = await this._jwtService.buildTokens(user, profile)
 
-        /**
-         * TODO: Update DB with refresh token, mailer, activity log
-         */
-        await Promise.all([this._mailerService.sendWelcomeEmail(user)])
+        await Promise.all([
+            this._userService.update.refresh(user, tokens.refresh),
+            this._mailerService.sendWelcomeEmail(user),
+        ])
 
         return tokens
     }

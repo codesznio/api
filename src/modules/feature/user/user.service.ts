@@ -25,6 +25,12 @@ export class UserService {
         return await this._userRepository.retrieve(id)
     }
 
+    private async _updateRefreshToken(user: User, token: string): Promise<User | null> {
+        return await this._userRepository.update(user._id, {
+            'tokens.jwt.refresh': token,
+        })
+    }
+
     async create(dto: Api.UserCreateParams): Promise<User> {
         const user = await this._userRepository.create(this._userFactory.create(dto))
 
@@ -35,6 +41,12 @@ export class UserService {
         return {
             byEmail: (email: string): Promise<User | null> => this._retrieveByEmail(email),
             byId: (id: string): Promise<User | null> => this._retrieveById(id),
+        }
+    }
+
+    get update() {
+        return {
+            refresh: (user: User, token: string): Promise<User | null> => this._updateRefreshToken(user, token),
         }
     }
 }
