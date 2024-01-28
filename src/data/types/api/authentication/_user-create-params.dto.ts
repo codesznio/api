@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
 
-export class SignupUserParams {
+export class UserCreateParams {
     @IsEmail()
     @IsNotEmpty()
     email: string

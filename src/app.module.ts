@@ -5,19 +5,19 @@ import { AppController } from './app.controller'
 
 // Core Modules
 import { ConfigModule } from '@/config'
-import { ProvidersModule } from '@/providers'
+import { ProvidersModule } from '@/data/providers'
 
 // Modules
-import { ActivityModule } from '@/modules/activity/activity.module'
-import { AuthenticationModule } from '@/modules/authentication/authentication.module'
-import { PermissionModule } from '@/modules/permission/permission.module'
-import { ProfileModule } from '@/modules/profile/profile.module'
-import { UserModule } from '@/modules/user/user.module'
+import { ActivityModule } from '@/modules/feature/activity/activity.module'
+import { AuthenticationModule } from '@/modules/feature/authentication/authentication.module'
+import { PermissionModule } from '@/modules/feature/permission/permission.module'
+import { ProfileModule } from '@/modules/feature/profile/profile.module'
+import { UserModule } from '@/modules/feature/user/user.module'
 
 // Util Modules
-import { JwtModule } from '@/utils/jwt/jwt.module'
-import { MailerModule } from '@/utils/mailer/mailer.module'
-import { StripeModule } from '@/utils/stripe/stripe.module'
+import { JwtModule } from '@/modules/utility/jwt/jwt.module'
+import { MailerModule } from '@/modules/utility/mailer/mailer.module'
+import { StripeModule } from '@/modules/utility/stripe/stripe.module'
 
 @Module({
     imports: [
@@ -25,14 +25,14 @@ import { StripeModule } from '@/utils/stripe/stripe.module'
         ConfigModule,
         ProvidersModule,
 
-        // Modules
+        // Feature Modules
         ActivityModule,
         AuthenticationModule,
         PermissionModule,
         ProfileModule,
         UserModule,
 
-        // Util Modules
+        // Utility Modules
         JwtModule,
         MailerModule,
         StripeModule,

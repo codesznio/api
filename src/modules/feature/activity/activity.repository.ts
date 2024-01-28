@@ -6,7 +6,7 @@ import { Model } from 'mongoose'
 import { Activity, ActivityDocument } from './activity.schema'
 
 // Generic Repo
-import { MongoRepository } from '@/shared/mongo/mongo.repository'
+import { MongoRepository } from '@/data/mongo/mongo.repository'
 
 @Injectable()
 export class ActivityRepository extends MongoRepository<ActivityDocument> {

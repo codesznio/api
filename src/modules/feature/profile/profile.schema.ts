@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 
 // Modules
-import { User } from '@/modules/user/schema/user.schema'
+import { User } from '@/modules/feature/user/schema/user.schema'
 
 export type ProfileDocument = Profile & Document
 

@@ -6,7 +6,7 @@ import { Model } from 'mongoose'
 import { Profile, ProfileDocument } from './profile.schema'
 
 // Generic Repo
-import { MongoRepository } from '@/shared/mongo/mongo.repository'
+import { MongoRepository } from '@/data/mongo/mongo.repository'
 
 @Injectable()
 export class ProfileRepository extends MongoRepository<ProfileDocument> {

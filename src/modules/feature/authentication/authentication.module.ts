@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 
 // Module
-import { ProfileModule } from '@/modules/profile/profile.module'
-import { UserModule } from '@/modules/user/user.module'
+import { ProfileModule } from '@/modules/feature/profile/profile.module'
+import { UserModule } from '@/modules/feature/user/user.module'
 
 // Controller
 import { AuthenticationController } from './authentication.controller'

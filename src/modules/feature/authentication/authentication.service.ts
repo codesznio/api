@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 
-import { Api } from '@/types/api'
+import { Api } from '@/data/types/api'
 
-/**
- * 1. Check if user exists
- */
+// Services
+import { UserService } from '@/modules/feature/user/user.service'
+
 @Injectable()
 export class AuthenticationService {
-    signup(dto: Api.SignupUserParams): Api.Tokens {
-        console.log(dto)
+    constructor(private _userService: UserService) {}
+
+    async signup(dto: Api.UserSignupParams): Promise<Api.Tokens> {
+        const exists = await this._userService.retrieve.byEmail(dto.email)
+
+        if (exists) {
+            throw new BadRequestException('Cannot create user with this email.')
+        }
+
+        const user = await this._userService.create(dto)
+
+        console.log(user)
 
         return {
             access: '',
