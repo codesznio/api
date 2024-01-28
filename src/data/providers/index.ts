@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 
 // Providers
-import { MongoDatabaseProviderModule } from './_mongo.provider'
+import { MongoDatabaseProviderModule } from '@/data/mongo/mongo.provider'
 
 @Module({
     imports: [MongoDatabaseProviderModule],
