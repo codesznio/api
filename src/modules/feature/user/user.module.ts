@@ -13,7 +13,7 @@ import { UserService } from './user.service'
 import { UserController } from './user.controller'
 
 // Utils
-import { StringEncryptor } from '@/shared/string-encryptor'
+import { StringEncryptor } from '@/shared/utils/string-encryptor'
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],

@@ -31,6 +31,7 @@ export class JwtService {
             this._signToken(
                 {
                     profile: profile._id.toString(),
+                    role: user.credentials.role,
                     user: user._id.toString(),
                     verified: user.credentials.verified,
                 },
@@ -39,6 +40,7 @@ export class JwtService {
             this._signToken(
                 {
                     profile: profile._id.toString(),
+                    role: user.credentials.role,
                     user: user._id.toString(),
                     verified: user.credentials.verified,
                 },

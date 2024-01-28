@@ -14,7 +14,7 @@ import { AuthenticationController } from './authentication.controller'
 import { AuthenticationService } from './authentication.service'
 
 // Shared
-import { StringEncryptor } from '@/shared/string-encryptor'
+import { StringEncryptor } from '@/shared/utils/string-encryptor'
 
 @Module({
     imports: [JwtModule, MailerModule, ProfileModule, StripeModule, UserModule],

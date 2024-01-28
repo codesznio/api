@@ -8,7 +8,7 @@ import { User } from './schema/user.schema'
 import { Api } from '@/data/types/api'
 
 // Utils
-import { StringEncryptor } from '@/shared/string-encryptor'
+import { StringEncryptor } from '@/shared/utils/string-encryptor'
 
 @Injectable()
 export class UserFactory {

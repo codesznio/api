@@ -11,7 +11,7 @@ import { StripeService } from '@/modules/utility/stripe/services'
 import { UserService } from '@/modules/feature/user/user.service'
 
 // Utils
-import { StringEncryptor } from '@/shared/string-encryptor'
+import { StringEncryptor } from '@/shared/utils/string-encryptor'
 
 @Injectable()
 export class AuthenticationService {
@@ -44,40 +44,46 @@ export class AuthenticationService {
         return tokens
     }
 
-    async logout(): Promise<void> {
-        // const user = await this._userService.retrieve.byId(id)
-        // if (!user) {
-        //     throw new BadRequestException('Invalid token.')
-        // }
-        // await Promise.all([
-        //     this._userService.update.properties(user, {
-        //         'tokens.jwt.refresh': null,
-        //     }),
-        // ])
-        // return
+    async logout(payload: Api.JwtPayload): Promise<void> {
+        const user = await this._userService.retrieve.byId(payload.user)
+
+        if (!user) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'tokens.jwt.refresh': null,
+            }),
+        ])
+
+        return
     }
 
-    async refresh(): Promise<void> {
-        // const encryptor = new StringEncryptor()
-        // const [user, profile] = await Promise.all([
-        //     this._userService.findById(payload.user),
-        //     this._profileService.findById(payload.profile),
-        // ])
-        // if (!user) {
-        //     throw new UnauthorizedException('Invalid token')
-        // }
-        // // TODO: Explain this.
-        // const isValid = encryptor.compareHash(payload.refresh, user.tokens.refresh)
-        // if (!isValid) {
-        //     throw new UnauthorizedException('Invalid token')
-        // }
-        // const tokens = await this._jwtService.buildTokens(user, profile)
-        // await Promise.all([
-        //     this._userService.update(user._id, {
-        //         'tokens.refresh': encryptor.generateHash(tokens.refresh),
-        //     }),
-        // ])
-        // return tokens
+    async refresh(payload: Api.JwtRefreshPayload): Promise<Api.Tokens> {
+        const [user, profile] = await Promise.all([
+            this._userService.retrieve.byId(payload.user),
+            this._profileService.retrieve.byId(payload.profile),
+        ])
+        if (!user) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        const isValid = this._stringEncryptor.compare(payload.refresh, user.tokens.jwt.refresh)
+
+        if (!isValid) {
+            throw new BadRequestException('Invalid token.')
+        }
+
+        const tokens = await this._jwtService.buildTokens(user, profile)
+
+        await Promise.all([
+            this._userService.update.properties(user, {
+                'tokens.jwt.refresh': null,
+            }),
+        ])
+
+        return tokens
     }
 
     async signup(dto: Api.EmailSignupParams): Promise<Api.Tokens> {

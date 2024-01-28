@@ -1,10 +1,15 @@
-import { Body, Controller, Post, Query } from '@nestjs/common'
+import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common'
 
 // Service
 import { AuthenticationService } from './authentication.service'
 
 // Types
 import { Api } from '@/data/types/api'
+
+// Shared
+import { AuthorizationGuard } from '@/shared/guards/authorization.guard'
+import { RefreshGuard } from '@/shared/guards/refresh.guard'
+import { GetPayload } from '@/shared/decorators/get-payload.decorator'
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -20,9 +25,10 @@ export class AuthenticationController {
         }
     }
 
+    @UseGuards(AuthorizationGuard)
     @Post('logout')
-    async logout(): Promise<Api.Response<null>> {
-        await this._authenticationService.logout()
+    async logout(@GetPayload() payload: Api.JwtPayload): Promise<Api.Response<null>> {
+        await this._authenticationService.logout(payload)
 
         return {
             success: true,
@@ -30,15 +36,13 @@ export class AuthenticationController {
         }
     }
 
+    @UseGuards(RefreshGuard)
     @Post('refresh')
-    async refresh(): Promise<Api.Response<Api.Tokens>> {
-        await this._authenticationService.refresh()
+    async refresh(@GetPayload() payload: Api.JwtRefreshPayload): Promise<Api.Response<Api.Tokens>> {
+        const data = await this._authenticationService.refresh(payload)
 
         return {
-            data: {
-                access: '',
-                refresh: '',
-            },
+            data,
             success: true,
         }
     }
