@@ -14,4 +14,20 @@ export class StringEncryptor {
 
         return bcrypt.hashSync(text, salt)
     }
+
+    public generateRandomString(count: number): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        let result = ''
+
+        for (let i = 0; i < count; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length)
+            result += characters[randomIndex]
+        }
+
+        return result
+    }
+
+    public generateRandomSixDigitCode(): number {
+        return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
+    }
 }

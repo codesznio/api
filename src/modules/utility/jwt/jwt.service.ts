@@ -16,30 +16,7 @@ export class JwtService {
         private _configService: ConfigService,
     ) {}
 
-    public async buildTokens(user: User, profile: Profile): Promise<{ access: string; refresh: string }> {
-        const [access, refresh] = await Promise.all([
-            this.signToken(
-                {
-                    profile: profile._id.toString(),
-                    user: user._id.toString(),
-                    verified: user.credentials.email_verified,
-                },
-                false,
-            ),
-            this.signToken(
-                {
-                    profile: profile._id.toString(),
-                    user: user._id.toString(),
-                    verified: user.credentials.email_verified,
-                },
-                true,
-            ),
-        ])
-
-        return { access, refresh }
-    }
-
-    signToken(payload: Api.JwtPayload, refresh: boolean): Promise<string> {
+    private _signToken(payload: Api.JwtPayload, refresh: boolean): Promise<string> {
         return this._nestJWTService.signAsync(payload, {
             secret: refresh
                 ? this._configService.get<string>('jwt.refresh')
@@ -47,5 +24,28 @@ export class JwtService {
             expiresIn: refresh ? '7d' : '10m',
             issuer: this._configService.get<string>('jwt.issuer'),
         })
+    }
+
+    public async buildTokens(user: User, profile: Profile): Promise<{ access: string; refresh: string }> {
+        const [access, refresh] = await Promise.all([
+            this._signToken(
+                {
+                    profile: profile._id.toString(),
+                    user: user._id.toString(),
+                    verified: user.credentials.verified,
+                },
+                false,
+            ),
+            this._signToken(
+                {
+                    profile: profile._id.toString(),
+                    user: user._id.toString(),
+                    verified: user.credentials.verified,
+                },
+                true,
+            ),
+        ])
+
+        return { access, refresh }
     }
 }
