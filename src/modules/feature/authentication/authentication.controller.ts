@@ -10,6 +10,16 @@ import { Api } from '@/data/types/api'
 export class AuthenticationController {
     constructor(private _authenticationService: AuthenticationService) {}
 
+    @Post('login')
+    async login(@Body() body: Api.EmailLoginParams): Promise<Api.Response<Api.Tokens>> {
+        const data = await this._authenticationService.login(body)
+
+        return {
+            data,
+            success: true,
+        }
+    }
+
     @Post('signup')
     async create(@Body() dto: Api.UserCreateParams): Promise<Api.Response<Api.Tokens>> {
         const data = await this._authenticationService.signup(dto)
