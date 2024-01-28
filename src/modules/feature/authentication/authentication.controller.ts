@@ -20,6 +20,29 @@ export class AuthenticationController {
         }
     }
 
+    @Post('logout')
+    async logout(): Promise<Api.Response<null>> {
+        await this._authenticationService.logout()
+
+        return {
+            success: true,
+            data: null,
+        }
+    }
+
+    @Post('refresh')
+    async refresh(): Promise<Api.Response<Api.Tokens>> {
+        await this._authenticationService.refresh()
+
+        return {
+            data: {
+                access: '',
+                refresh: '',
+            },
+            success: true,
+        }
+    }
+
     @Post('signup')
     async create(@Body() dto: Api.UserCreateParams): Promise<Api.Response<Api.Tokens>> {
         const data = await this._authenticationService.signup(dto)
