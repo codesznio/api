@@ -1,11 +1,29 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, UseGuards } from '@nestjs/common'
+
+// Data
+import { User } from './schema/user.schema'
+
+// Service
+import { UserService } from './user.service'
+
+// Shareds
+import { AuthorizationGuard } from '@/shared/guards/authorization.guard'
+import { GetPayload } from '@/shared/decorators/get-payload.decorator'
+
+// Types
+import { Api } from '@/data/types/api'
 
 @Controller('users')
 export class UserController {
-    @Get()
-    async list() {
+    constructor(private _profileService: UserService) {}
+
+    @UseGuards(AuthorizationGuard)
+    @Get('me')
+    async me(@GetPayload() payload: Api.JwtPayload): Promise<Api.Response<User>> {
+        const data = await this._profileService.retrieve.byId(payload.user)
+
         return {
-            data: 'This is the users endpoint',
+            data,
             success: true,
         }
     }
