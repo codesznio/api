@@ -79,7 +79,7 @@ export class AuthenticationService {
 
         await Promise.all([
             this._userService.update.properties(user, {
-                'tokens.jwt.refresh': null,
+                'tokens.jwt.refresh': this._stringEncryptor.generate(tokens.refresh),
             }),
         ])
 
